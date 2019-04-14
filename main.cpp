@@ -5,16 +5,19 @@
 #include <vector>
 #include <cmath>
 
+
 using namespace std;
 
-void stringProcessor(string pfxExpression, stack <double> &mystl);
+void stringProcessor(string pfxExpression, stack <double> &mystl, stack <string> &operadores);
 float operate(double operand1, double operand2, string operador);
+void cleanStacks(stack <double> &mystl, stack <string> &operadores);
 bool isOperator(string spot);
 
 int main(){
     string pfxIn;
     int resultant;
     stack <double> mystl;
+    stack <string> operadores;
 
     while (true){
         cout << "Enter a postfix expression or quit to exit:";
@@ -22,54 +25,95 @@ int main(){
         if (pfxIn == "exit" || pfxIn == "quit"){
             exit(0);
         }else {
-            stringProcessor(pfxIn, mystl);
+            stringProcessor(pfxIn, mystl, operadores);
         }
     }
 
     return 0;
 }
 
-void stringProcessor(string pfxExpression, stack <double> &mystl){
+void stringProcessor(string pfxExpression, stack <double> &mystl, stack <string> &operadores){
+    
+    
     stringstream expressionIn(pfxExpression);
     vector<string> contents;
-    int i = 0;
-    double operand1 = 0;
-    double operand2 = 0;
     string thing = "";
-    while (expressionIn.good()){
+    double solution;
+    
+    //pump everything, including spaces to stringstream as strings
+    while (expressionIn.good() && !expressionIn.eof()){
         expressionIn >> thing;
         contents.push_back(thing);
-        
-
-        if (isdigit(thing.at(0))) {
-            //push to the stack
-             mystl.push(stod(contents.at(i)));
-        } else if (isOperator(thing)){
-            
-            //pop stack twice if empty or see a beautiful segmentation fault
-            if (!mystl.empty()){
-                operand1 = mystl.top();
-                mystl.pop();
-                if (!mystl.empty()){
-                    operand2 = mystl.top();
-                    mystl.pop(); 
-                } else {
-                    cout << "Invalid Operation" << endl;
-                    main();
-                }
-            }
-            
-        } else {
-            cout << "Invalid Expression" << endl;
+    }
+    //format check  
+    for (int i = 0 ; i < contents.size(); i++){
+        cout << "checking " << contents.at(i) << endl;
+        if (!(isOperator(contents.at(i)) || contents.at(i) == " " || isdigit(contents.at(i).at(0)))){
+            cout << "Invalid Expression!" << endl;
+            cout << "First check failed" << endl;
             main();
         }
-        i++;
+    }
+    //stack adding
+    for (int i = 0; i < contents.size(); i++) {
+        if (isOperator(contents.at(i))){
+            operadores.push(contents.at(0));
+        } else if (isdigit(contents.at(i).at(0))){ // I know this looks dirty but isdigit doesn't like smashing the entire number in there
+            mystl.push(stod(contents.at(i)));
+        }
     }
     
-    expressionIn.clear(); //clear string stream
-    cout << operate(operand1 , operand2, thing) << endl;
+    /*if mystl < operator */
+    
+    if (mystl.size() > operadores.size()){
+        cout << "stacks have a good ratio" << endl;
+    }else {
+        cout << "Invalid Expression!" << endl;
+        cout << "second check failed" << endl;
+        cout << "mystl " << mystl.size() << endl;
+        cout << "operators " << operadores.size() << endl;
+        cleanStacks(mystl, operadores); // clean up just in case
+        main();
+    }
+    //time to empty all of them doing an operation
+     while (!(mystl.empty() && operadores.empty())){
+         cout << "working through it" << endl;
+         double operand1 = mystl.top();
+         mystl.pop();
+         double operand2 = mystl.top();
+         mystl.pop();
+         
+         string operador = operadores.top();
+         operadores.pop();
+         
+         solution = solution + operate(operand1, operand2, operador);
+         
+     }
+     
+     cleanStacks(mystl, operadores);
+    
+    
+    
+    
+    
+    expressionIn.clear(); //clear stringstream
+    
+     cout << solution << endl;
     
 }
+
+void cleanStacks(stack <double> &mystl, stack <string> &operadores){
+    while (!mystl.empty()){
+        mystl.pop();
+    }
+    
+    while (!operadores.empty()){
+        operadores.pop();
+    }
+    
+}
+
+
 
 float operate(double operand1, double operand2, string operador){
     //operator is operador in spanish because the word operator is reserved
