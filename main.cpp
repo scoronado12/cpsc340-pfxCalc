@@ -45,7 +45,7 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, stack <string>
         expressionIn >> thing;
         contents.push_back(thing);
     }
-    //format check  
+    //format check - used some 326 logic here
     for (int i = 0 ; i < contents.size(); i++){
 //         cout << "checking " << contents.at(i) << endl;
         if (!(isOperator(contents.at(i)) || contents.at(i) == " " || isdigit(contents.at(i).at(0)))){
@@ -58,7 +58,7 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, stack <string>
     for (int i = 0; i < contents.size(); i++) {
         if (isOperator(contents.at(i))){
             operadores.push(contents.at(i));
-        } else if (isdigit(contents.at(i).at(0))){ // I know this looks dirty but isdigit doesn't like smashing the entire number in there
+        } else if (isdigit(contents.at(i).at(0))){ // I know this looks dirty but isdigit doesn't like the entire number in there as an int/double/etc
             mystl.push(stod(contents.at(i)));
         }
     }
@@ -67,16 +67,17 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, stack <string>
     
     if (!(mystl.size() > operadores.size())){ // check if expression is invalid
         cout << "Invalid Expression!" << endl;
+        cleanStacks(mystl, operadores); // clean up just in case
+        main();
 //         cout << "second check failed" << endl;
 //         cout << "mystl " << mystl.size() << endl;
 //         cout << "operators " << operadores.size() << endl;
-        cleanStacks(mystl, operadores); // clean up just in case
-        main();
     }
     //time to empty all of them doing an operation
      while (!(mystl.empty())){
          
-//          cout << "op" << endl;
+          cout << "op" << endl;
+         //TODO fix segfault occurs here when using three numbers to 2 operations
          double operand1 = mystl.top();
          mystl.pop();
          double operand2 = mystl.top();
