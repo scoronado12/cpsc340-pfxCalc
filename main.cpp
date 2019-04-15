@@ -98,7 +98,7 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, stack <string>
          double operand1 = mystl.top();
          mystl.pop();
          if (mystl.empty()){
-
+            //TODO check if this needs to be different
             solution = operate(operand1, solution, operadores.top());
             operadores.pop();
          }else {
