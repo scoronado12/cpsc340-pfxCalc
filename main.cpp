@@ -6,12 +6,25 @@
 #include <cmath>
 
 
+/** @author scoronado
+ *  @since 2019-04-06
+ *  POST FIX CALCULATOR
+ */
+
+
 using namespace std;
 
 void stringProcessor(string pfxExpression, stack <double> &mystl, stack <string> &operadores);
 float operate(double operand1, double operand2, string operador);
 void cleanStacks(stack <double> &mystl, stack <string> &operadores);
 bool isOperator(string spot);
+
+
+/**
+ * main() - front facing user input
+ * @return 0 - signifying a proper Unix exit code
+ */
+
 
 int main(){
     string pfxIn;
@@ -32,14 +45,19 @@ int main(){
     return 0;
 }
 
+/**
+ * stringProcessor
+ *  @param stack <double> mystl - stack of numbers  - passed by reference
+ *  @param stack <string> operadores - stack of operators - passed by reference
+ * 
+ */
+
+
 void stringProcessor(string pfxExpression, stack <double> &mystl, stack <string> &operadores){
-    
-    
     stringstream expressionIn(pfxExpression);
     vector<string> contents;
     string thing = "";
     double solution = 0;
-    
     //pump everything, including spaces to stringstream as strings
     while (expressionIn.good() && !expressionIn.eof()){
         expressionIn >> thing;
@@ -50,7 +68,7 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, stack <string>
 //         cout << "checking " << contents.at(i) << endl;
         if (!(isOperator(contents.at(i)) || contents.at(i) == " " || isdigit(contents.at(i).at(0)))){
             cout << "Invalid Expression!" << endl;
-//             cout << "First check failed" << endl;
+             cout << "First check failed" << endl;
             main();
         }
     }
@@ -62,10 +80,9 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, stack <string>
             mystl.push(stod(contents.at(i)));
         }
     }
-    
+
     /*if mystl < operator */
-    
-    if (!(mystl.size() > operadores.size())){ // check if expression is invalid
+    if (!(mystl.size() > operadores.size())){ // 2nd format check check if expression is invalid
         cout << "Invalid Expression!" << endl;
         cleanStacks(mystl, operadores); // clean up just in case
         main();
@@ -74,38 +91,40 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, stack <string>
 //         cout << "operators " << operadores.size() << endl;
     }
     //time to empty all of them doing an operation
+     double operand2 = 0;
      while (!(mystl.empty())){
-         
-          cout << "op" << endl;
-         //TODO fix segfault occurs here when using three numbers to 2 operations
+
          double operand1 = mystl.top();
          mystl.pop();
-         double operand2 = mystl.top();
-         mystl.pop();
+         if (mystl.empty()){
+
+            solution = operate(operand1, solution, operadores.top());
+            operadores.pop();
+         }else {
+             operand2 = mystl.top();
+             mystl.pop();
+         }
          if (!operadores.empty()){
             string operador = operadores.top();
             operadores.pop();
             solution = solution + operate(operand1, operand2, operador);
-         } else {
+         } /*else {
              cout << "Invalid Expression!" << endl;
+             cout << "Third check" << endl;
              cleanStacks(mystl, operadores);
              main();
-             
-         }
-         
+         }*/
      }
-     
      cleanStacks(mystl, operadores); //empty them just in case.
-    
-    
-    
-    
-    
-    expressionIn.clear(); //clear stringstream
-    
+     expressionIn.clear(); //clear stringstream
      cout << solution << endl;
-    
 }
+
+
+/** Clean Stacks - sequentially takes two stacks and empties them.
+ * @param stack <double> mystl - Stack of nums
+ * @param operadores <string> - stack of operators
+ */
 
 void cleanStacks(stack <double> &mystl, stack <string> &operadores){
     while (!mystl.empty()){
@@ -118,6 +137,11 @@ void cleanStacks(stack <double> &mystl, stack <string> &operadores){
     
 }
 
+/** Operate - Performs and operation on two nums and returns the result
+ * @param operand1 - double 
+ * @param opearand2 - double
+ * @param opeardor - string of the operator
+ */
 
 
 float operate(double operand1, double operand2, string operador){
@@ -140,6 +164,9 @@ float operate(double operand1, double operand2, string operador){
     
 }
 
+/** isOperator - returns true if param is an operator
+ *  @param spot - string
+ */
 
 bool isOperator(string spot){
     if (spot == "+" || spot == "-" || spot == "*" || spot == "/" || spot == "^"){
