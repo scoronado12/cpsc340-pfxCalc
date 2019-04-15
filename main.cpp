@@ -68,7 +68,7 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, stack <string>
 //         cout << "checking " << contents.at(i) << endl;
         if (!(isOperator(contents.at(i)) || contents.at(i) == " " || isdigit(contents.at(i).at(0)))){
             cout << "Invalid Expression!" << endl;
-             cout << "First check failed" << endl;
+//              cout << "First check failed" << endl;
             main();
         }
     }
@@ -82,7 +82,8 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, stack <string>
     }
 
     /*if mystl < operator */
-    if (!(mystl.size() > operadores.size())){ // 2nd format check check if expression is invalid
+    
+    if ((mystl.size() < operadores.size() || (/*TODO 1 2 3 4 * must be caught */) )){ // 2nd format check check if expression is invalid
         cout << "Invalid Expression!" << endl;
         cleanStacks(mystl, operadores); // clean up just in case
         main();
