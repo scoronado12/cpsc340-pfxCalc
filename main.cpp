@@ -68,6 +68,7 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, vector <string
         if (!(isOperator(contents.at(i)) || contents.at(i) == " " || isdigit(contents.at(i).at(0)))){
             cout << "Invalid Expression!" << endl;
               //cout << "First check failed" << endl;
+            
             main();
         }
     }
@@ -80,30 +81,47 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, vector <string
         }
     }
 
-    /*if mystl < operator */
-    if (mystl.size() < operadores.size()){ // 2nd format check check if expression is invalid
+        //numbers size < operators size
+    if (mystl.size() <= operadores.size()){ // 2nd format check check if expression is invalid
         cout << "Invalid Expression!" << endl;
+//         cout << "2nd check failed" << endl;
         cleanStacks(mystl); // clean up just in case
+        operadores.clear();
         main();
          //cout << "second check failed" << endl;
          //cout << "mystl " << mystl.size() << endl;
          //cout << "operators " << operadores.size() << endl;
     }
     //time to empty all of them doing an operation
-     while (mystl.size() > 1){
-         
-         double op1 = mystl.top();
-         mystl.pop();
-         double op2 = mystl.top();
-         mystl.pop();
-         
-         solution = operate(op1, op2, operadores.at(0));
-         operadores.pop_back();
-         mystl.push(solution);
-         
-         
-     }
+    
+//     cout << "MYSTL " << mystl.size() << endl << "operadores " << operadores.size() << endl;
+    try{
+        int i = operadores.size() - 1 ;
+        while (mystl.size() > 1){
+            
+            double op1 = mystl.top();
+            mystl.pop();
+            double op2 = mystl.top();
+            mystl.pop();
+             cout << "Operator" << operadores.at(i) << endl;
+//             cout << "op1 " << op1 << " op2 " << op2 << endl;
+            solution = operate(op1, op2, operadores.at(i));
+    //          operadores.pop_back();
+            mystl.push(solution);
+            cout << "SOLUTION " << solution << endl;
+            i--;
+            
+        }
+    } catch (const exception& e){
+        cleanStacks(mystl);
+        expressionIn.clear();
+//         cout << "try-catch issue caught" <<endl;
+        cout << "Invalid Expression!" << endl;
+        main();
+        
+    }
      cleanStacks(mystl); //empty them just in case.
+     operadores.clear();
      expressionIn.clear(); //clear stringstream
      cout << solution << endl;
 }
@@ -111,14 +129,12 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, vector <string
 
 /** Clean Stacks - sequentially takes two stacks and empties them.
  * @param stack <double> mystl - Stack of nums
- * @param operadores <string> - stack of operators
  */
 
 void cleanStacks(stack <double> &mystl){
     while (!mystl.empty()){
         mystl.pop();
     }
-
     
 }
 
