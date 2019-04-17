@@ -55,6 +55,8 @@ int main(){
 void stringProcessor(string pfxExpression, stack <double> &mystl, vector <string> &operadores){
     stringstream expressionIn(pfxExpression);
     vector<string> contents;
+    vector<string> nums;
+
     string thing = "";
     double solution = 0;
     //pump everything, including spaces to stringstream as strings
@@ -67,42 +69,77 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, vector <string
          //cout << "checking " << contents.at(i) << endl;
         if (!(isOperator(contents.at(i)) || contents.at(i) == " " || isdigit(contents.at(i).at(0)))){
             cout << "Invalid Expression!" << endl;
-              //cout << "First check failed" << endl;
+            contents.clear();
             main();
         }
+        
     }
-    //stack adding
-    for (int i = 0; i < contents.size(); i++) {
-        if (isOperator(contents.at(i))){
-            operadores.push_back(contents.at(i));
-        } else if (isdigit(contents.at(i).at(0))){ // I know this looks dirty but isdigit doesn't like the entire number in there as an int/double/etc
-            mystl.push(stod(contents.at(i)));
+    
+    //Scan contents to rule out bad expressions
+    for (string thing: contents){
+        if (isOperator(thing)){
+            operadores.push_back(thing);
+            
+        } else if (isdigit(thing.at(0))){
+            nums.push_back(thing); // vector of strings
         }
     }
-
-    /*if mystl < operator */
-    if (mystl.size() < operadores.size()){ // 2nd format check check if expression is invalid
-        cout << "Invalid Expression!" << endl;
-        cleanStacks(mystl); // clean up just in case
+    
+    if (nums.size() > operadores.size() * 2 || nums.size() == operadores.size()){
+        cout << "Invalid Expression!" <<endl;
+        contents.clear();
+        operadores.clear();
         main();
-         //cout << "second check failed" << endl;
-         //cout << "mystl " << mystl.size() << endl;
-         //cout << "operators " << operadores.size() << endl;
+        
+        
     }
-    //time to empty all of them doing an operation
-     while (mystl.size() > 1){
-         
-         double op1 = mystl.top();
-         mystl.pop();
-         double op2 = mystl.top();
-         mystl.pop();
-         
-         solution = operate(op1, op2, operadores.at(0));
-         operadores.pop_back();
-         mystl.push(solution);
-         
-         
-     }
+    
+    
+    
+    
+    try {
+        for (string thing: contents){
+            
+            if (isdigit(thing.at(0))){
+                mystl.push(stod(thing));
+                
+                
+            } else if (isOperator(thing)){
+                
+                
+                while (mystl.size() >1){
+                    double op1 = mystl.top();
+                    mystl.pop();
+                    double op2 = mystl.top();
+                    mystl.pop();
+                    solution = operate(op1,op2,thing);
+                    mystl.push(solution);
+//                     cout << solution << endl;
+                }
+                
+            }
+            
+            
+        }
+        
+        
+    }catch (exception&e ) {
+        
+        cout << "Invalid Expression" << endl;
+        cleanStacks(mystl);
+        contents.clear();
+        main();
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+
      cleanStacks(mystl); //empty them just in case.
      expressionIn.clear(); //clear stringstream
      cout << solution << endl;
@@ -118,8 +155,6 @@ void cleanStacks(stack <double> &mystl){
     while (!mystl.empty()){
         mystl.pop();
     }
-
-    
 }
 
 /** Operate - Performs and operation on two nums and returns the result
