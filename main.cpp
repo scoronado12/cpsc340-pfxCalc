@@ -83,26 +83,27 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, vector <string
     }
     if (nums.size() > operadores.size() * 2 || nums.size() == operadores.size()){
         cout << "Invalid Expression!" <<endl;
-//         cout << "2nd check" << endl;
         contents.clear();
         nums.clear();
         operadores.clear();
         main();
     }
+    
     try {
+        int i = 0;
         for (string thing: contents){
             if (isdigit(thing.at(0))){
                 mystl.push(stod(thing));
-            } else if (isOperator(thing) &&){ // TODO check if it contains something like + *
-                //TODO PEMDAS
+            } else if (isOperator(thing)){ 
                 while (mystl.size() > 1){
                     double op1 = mystl.top();
                     mystl.pop();
                     double op2 = mystl.top();
                     mystl.pop();
-                    solution = operate(op1,op2,thing);
+//                     cout <<"OPERATOR " << thing << endl;
+                    solution = operate(op1,op2,operadores.at(i));
+                    i++;
                     mystl.push(solution);
-//                     cout << solution << endl;
                 }
                 
 
