@@ -72,42 +72,29 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, vector <string
             contents.clear();
             main();
         }
-        
     }
-    
     //Scan contents to rule out bad expressions
     for (string thing: contents){
         if (isOperator(thing)){
             operadores.push_back(thing);
-            
         } else if (isdigit(thing.at(0))){
             nums.push_back(thing); // vector of strings
         }
     }
-    
     if (nums.size() > operadores.size() * 2 || nums.size() == operadores.size()){
         cout << "Invalid Expression!" <<endl;
+//         cout << "2nd check" << endl;
         contents.clear();
+        nums.clear();
         operadores.clear();
         main();
-        
-        
     }
-    
-    
-    
-    
     try {
         for (string thing: contents){
-            
             if (isdigit(thing.at(0))){
                 mystl.push(stod(thing));
-                
-                
             } else if (isOperator(thing)){
-                
-                
-                while (mystl.size() >1){
+                while (mystl.size() > 1){
                     double op1 = mystl.top();
                     mystl.pop();
                     double op2 = mystl.top();
@@ -117,38 +104,25 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, vector <string
 //                     cout << solution << endl;
                 }
                 
+
             }
-            
-            
         }
-        
-        
-    }catch (exception&e ) {
-        
+    }catch (exception& e) {
         cout << "Invalid Expression" << endl;
         cleanStacks(mystl);
         contents.clear();
         main();
-        
     }
-    
-    
-    
-    
-    
-    
-    
-    
-
      cleanStacks(mystl); //empty them just in case.
      expressionIn.clear(); //clear stringstream
+     nums.clear();
+     operadores.clear();
      cout << solution << endl;
 }
 
 
 /** Clean Stacks - sequentially takes two stacks and empties them.
  * @param stack <double> mystl - Stack of nums
- * @param operadores <string> - stack of operators
  */
 
 void cleanStacks(stack <double> &mystl){
@@ -158,7 +132,7 @@ void cleanStacks(stack <double> &mystl){
 }
 
 /** Operate - Performs and operation on two nums and returns the result
- * @param operand1 - double 
+ * @param operand1 - double
  * @param opearand2 - double
  * @param opeardor - string of the operator
  */
@@ -171,17 +145,17 @@ float operate(double operand1, double operand2, string operador){
     } else if (operador == "-"){
         return operand2 - operand1;
     } else if (operador == "/"){
-        return operand2 / operand1;
+        if (operand2 < operand1){
+            return operand2 / operand1;
+        } else {
+            return operand1 / operand2;
+        }
     } else if (operador == "^"){
         return pow(operand2,operand1);
     } else if (operador == "*"){
         return operand1 * operand2;
     }
-        
     return 0;
-    
-    
-    
 }
 
 /** isOperator - returns true if param is an operator
