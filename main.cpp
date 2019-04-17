@@ -93,7 +93,8 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, vector <string
         for (string thing: contents){
             if (isdigit(thing.at(0))){
                 mystl.push(stod(thing));
-            } else if (isOperator(thing)){
+            } else if (isOperator(thing) &&){ // TODO check if it contains something like + *
+                //TODO PEMDAS
                 while (mystl.size() > 1){
                     double op1 = mystl.top();
                     mystl.pop();
@@ -110,6 +111,8 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, vector <string
     }catch (exception& e) {
         cout << "Invalid Expression" << endl;
         cleanStacks(mystl);
+        nums.clear();
+        operadores.clear();
         contents.clear();
         main();
     }
