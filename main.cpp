@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#define _USE_MATH_DEFINES
 #include <cmath>
 
 
@@ -64,16 +65,28 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, vector <string
         expressionIn >> thing;
         contents.push_back(thing);
     }
+    
+    //replace E and PI with cmath constants
+    for (int i = 0; i < contents.size(); i++) {
+        if (contents.at(i) == "PI"){
+            contents.at(i) = to_string(M_PI);
+        } else if (contents.at(i) == "E"){
+            contents.at(i) = to_string(M_E);
+        }
+    }
+    
+    
     //format check - used some 326 logic here
     for (int i = 0 ; i < contents.size(); i++){
          //cout << "checking " << contents.at(i) << endl;
         if (!(isOperator(contents.at(i)) || contents.at(i) == " " || isdigit(contents.at(i).at(0)))){
             cout << "Invalid Expression!" << endl;
+//             cout << "First check" << endl;
             contents.clear();
             main();
         }
-    }
     //Scan contents to rule out bad expressions
+    
     for (string thing: contents){
         if (isOperator(thing)){
             operadores.push_back(thing);
@@ -81,6 +94,16 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, vector <string
             nums.push_back(thing); // vector of strings
         }
     }
+    
+    
+    
+    
+        
+        
+    }
+    
+    
+    
     if (nums.size() > operadores.size() * 2 || nums.size() == operadores.size()){
         cout << "Invalid Expression!" <<endl;
         contents.clear();
