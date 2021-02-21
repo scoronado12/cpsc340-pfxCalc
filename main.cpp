@@ -83,7 +83,7 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, vector <string
             cout << "Invalid Expression!" << endl;
 //             cout << "First check" << endl;
             contents.clear();
-            main();
+            return;
         }
     //Scan contents to rule out bad expressions
     
@@ -109,7 +109,7 @@ void stringProcessor(string pfxExpression, stack <double> &mystl, vector <string
         contents.clear();
         nums.clear();
         operadores.clear();
-        main();
+    	return;
     }
     
     try {
